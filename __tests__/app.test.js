@@ -18,3 +18,21 @@ describe("GET /api", () => {
       });
   });
 });
+
+describe("GET /api/topics", () => {
+  test("200: responds with an array of topic objects, each of which should have the properties slugs and description", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({ body }) => {
+        const allTopics = body.topics;
+        expect(allTopics).toHaveLength(3);
+        allTopics.forEach((topic) => {
+          expect(topic).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+      });
+  });
+});
