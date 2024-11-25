@@ -25,9 +25,7 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        // console.log(body)
         const allTopics = body.topics;
-        console.log(allTopics);
         expect(allTopics).toHaveLength(3);
         allTopics.forEach((topic) => {
           expect(topic).toMatchObject({
@@ -44,6 +42,35 @@ describe("GET /api/topics", () => {
       .then(({ body }) => {
         const msg = body.msg;
         expect(msg).toBe("Incorrect endpoint");
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id", () => {
+  test("200: should retrieve a specific article with the given article id number", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+        expect(article).toMatchObject({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          body: expect.any(String),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  test("400: should respond with a bad message when using an invalid id e.g. /banana", () => {
+    return request(app)
+      .get("/api/articles/banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });
