@@ -35,4 +35,13 @@ describe("GET /api/topics", () => {
         });
       });
   });
+  test("404: handles an error when attempting to access a non-existent endpoint", () => {
+    return request(app)
+    .get("/api/notARoute")
+    .expect(404)
+    .then(({body}) => {
+      console.log(body.msg)
+      expect(body.msg).toBe("incorrect endpoint")
+    })
+  })
 });
