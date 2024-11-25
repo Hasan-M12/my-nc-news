@@ -18,3 +18,32 @@ describe("GET /api", () => {
       });
   });
 });
+
+describe("GET /api/topics", () => {
+  test("200: should respond an array of topic objects, each of which should have the following properties: slug and description", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({ body }) => {
+        // console.log(body)
+        const allTopics = body.topics;
+        console.log(allTopics);
+        expect(allTopics).toHaveLength(3);
+        allTopics.forEach((topic) => {
+          expect(topic).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+      });
+  });
+  test("404: should handle errors when accessing a non-existent endpoint", () => {
+    return request(app)
+      .get("/api/notARoute")
+      .expect(404)
+      .then(({ body }) => {
+        const msg = body.msg;
+        expect(msg).toBe("Incorrect endpoint");
+      });
+  });
+});
