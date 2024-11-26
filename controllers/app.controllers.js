@@ -3,7 +3,7 @@ const {
   selectTopics,
   selectArticlesByID,
   selectArticles,
-  selectCommentCount,
+  selectCommentsByArticleId,
 } = require("../models/app.models");
 
 exports.getApi = (req, res) => {
@@ -39,4 +39,16 @@ exports.getArticles = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getCommentsByArticlesId = (req, res, next) => {
+  const id = req.params;
+  const articleId = id.article_id
+  return Promise.all([selectArticlesByID(articleId), selectCommentsByArticleId(articleId)])
+  .then((promises) => {
+    res.status(200).send({article: promises[0], comments: promises[1]})
+  })
+  .catch((err) => {
+    next(err)
+  }) 
 };

@@ -95,13 +95,13 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test.skip("200: return an array of articles sorted by desc order of created_at", () => {
+  test("200: return an array of articles sorted by desc order of created_at", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
         const articles = body.articles;
-        console.log(articles);
+
         expect(articles).toBeSortedBy("created_at", {
           descending: true,
         });
@@ -112,8 +112,45 @@ describe("GET /api/articles", () => {
       .get("/api/banana")
       .expect(404)
       .then(({ body }) => {
-        console.log(body);
         expect(body.msg).toBe("Incorrect endpoint");
+      });
+  });
+});
+
+describe("GET /api/articles/articles_id/comments", () => {
+  test("200: should respond with an array of aall comment from article with a given article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const allComments = body.comments;
+        allComments.forEach((eachComment) => {
+          expect(eachComment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("200: should return an array of comments in a descending order by created_at", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const allComments = body.comments;
+        expect(allComments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("GET 404: should give an appropriate error message when given an invalid endpoint", () => {
+    return request(app)
+      .get("/api/articles/1/banana")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Incorrect endpoint")
       });
   });
 });

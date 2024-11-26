@@ -9,6 +9,11 @@
     "test": "jest __tests__/app.test.js",
     "prepare": "husky install"
   },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "jest-sorted"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/northcoders/be-nc-news.git"
@@ -32,10 +37,5 @@
     "express": "^4.21.1",
     "pg": "^8.7.3",
     "supertest": "^7.0.0"
-  },
-  "jest": {
-    "setupFilesAfterEnv": [
-      "jest-extended/all"
-    ]
   }
 }

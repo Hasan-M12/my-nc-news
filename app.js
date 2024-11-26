@@ -5,6 +5,7 @@ const {
   getTopics,
   getArticlesByID,
   getArticles,
+  getCommentsByArticlesId,
 } = require("./controllers/app.controllers");
 const {
   wrongPathHandler,
@@ -21,6 +22,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticlesByID);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticlesId);
 
 app.use(wrongPathHandler);
 
