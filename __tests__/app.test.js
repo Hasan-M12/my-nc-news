@@ -145,7 +145,7 @@ describe("GET /api/articles/articles_id/comments", () => {
         expect(allComments).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test("404: should give an appropriate error message when given an invalid endpoint", () => {
+  test("GET 404: should give an appropriate error message when given an invalid endpoint", () => {
     return request(app)
       .get("/api/articles/1/banana")
       .expect(404)
