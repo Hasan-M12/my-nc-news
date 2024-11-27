@@ -9,6 +9,7 @@ const {
   postComment,
   updateVotes,
   deleteComment,
+  getUsers,
 } = require("./controllers/app.controllers");
 const {
   wrongPathHandler,
@@ -34,6 +35,8 @@ app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", updateVotes);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api/users", getUsers)
 
 app.use(wrongPathHandler);
 
