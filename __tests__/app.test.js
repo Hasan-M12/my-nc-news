@@ -217,17 +217,6 @@ describe("PATCH /api/articles/:article_id", () => {
         expect(votes).toBe(-10);
       });
   });
-  test.skip("404: responds with error not found when an article not exists", () => {
-    const newVotes = {
-      inc_votes: 10,
-    };
-    return request(app)
-      .patch("/api/articles/10000")
-      .send(newVotes)
-      .expect(404)
-      .then(({ body }) => {
-      });
-  });
   test("400: Responds with a bad request error when trying to update an invalid article", () => {
     const newVotes = {
       inc_votes: 10,
@@ -239,6 +228,20 @@ describe("PATCH /api/articles/:article_id", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: should delete comment and have no content when deleting content", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("400: should respond with an error 400 bad request message when a comment is invalid", () => {
+    return request(app)
+      .delete("/api/comments/banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });

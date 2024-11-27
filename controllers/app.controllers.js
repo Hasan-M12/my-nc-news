@@ -6,6 +6,7 @@ const {
   selectCommentsByArticleId,
   insertComments,
   updatingVotes,
+  selectCommentsByCommentId,
 } = require("../models/app.models");
 
 exports.getApi = (req, res) => {
@@ -76,6 +77,15 @@ exports.updateVotes = (req, res, next) => {
   updatingVotes(id, incVotes)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  selectCommentsByCommentId(comment_id)
+    .then(() => {
+      res.status(204).send();
     })
     .catch(next);
 };
