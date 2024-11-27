@@ -39,6 +39,26 @@ exports.selectCommentsByArticleId = (article_id) => {
       [article_id]
     )
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promises.reject({
+          status: 404,
+          msg: "article or comments not found",
+        });
+      }
       return rows;
+    });
+};
+
+exports.insertComments = (article_id, username, body) => {
+  return db
+    .query(
+      `
+    INSERT INTO comments (author, body, article_id)
+    VALUES ($1, $2, $3)
+    RETURNING *`,
+      [username, body, article_id]
+    )
+    .then(({ rows }) => {
+      return rows[0];
     });
 };

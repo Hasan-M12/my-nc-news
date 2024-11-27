@@ -118,7 +118,7 @@ describe("GET /api/articles", () => {
 });
 
 describe("GET /api/articles/articles_id/comments", () => {
-  test("200: should respond with an array of aall comment from article with a given article_id", () => {
+  test("200: should respond with an array of all comment from article with a given article_id", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -145,12 +145,47 @@ describe("GET /api/articles/articles_id/comments", () => {
         expect(allComments).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test("GET 404: should give an appropriate error message when given an invalid endpoint", () => {
+  test("404: should give an appropriate error message when given an invalid endpoint", () => {
     return request(app)
       .get("/api/articles/1/banana")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Incorrect endpoint")
+        expect(body.msg).toBe("Incorrect endpoint");
+      });
+  });
+});
+
+describe.only("POST /api/articles/article_id/comments", () => {
+  test("201: should successfully post a comment and send the response back to the user", () => {
+    const toPostComment = {
+      username: "butter_bridge",
+      body: "comment",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(toPostComment)
+      .expect(201)
+      .then(({ body }) => {
+        const newComment = body.comment;
+        expect(newComment).toHaveProperty("comment_id");
+        expect(newComment).toHaveProperty("body");
+        expect(newComment).toHaveProperty("article_id");
+        expect(newComment).toHaveProperty("author");
+        expect(newComment).toHaveProperty("votes");
+        expect(newComment).toHaveProperty("created_at");
+      });
+  });
+  test("400: Responds with an bad request error message when the path is invalid", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "New comment",
+    };
+    return request(app)
+      .post("/api/articles/now-a-path/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });
