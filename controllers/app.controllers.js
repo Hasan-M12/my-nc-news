@@ -7,6 +7,7 @@ const {
   insertComments,
   updatingVotes,
   selectCommentsByCommentId,
+  selectUsers,
 } = require("../models/app.models");
 
 exports.getApi = (req, res) => {
@@ -86,6 +87,14 @@ exports.deleteComment = (req, res, next) => {
   selectCommentsByCommentId(comment_id)
     .then(() => {
       res.status(204).send();
+    })
+    .catch(next);
+};
+
+exports.getUsers = (req, res, next) => {
+  selectUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch(next);
 };

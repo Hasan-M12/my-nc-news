@@ -70,7 +70,8 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/banana")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
+        const articles = body.msg;
+        expect(articles).toBe("Bad request");
       });
   });
 });
@@ -150,7 +151,8 @@ describe("GET /api/articles/articles_id/comments", () => {
       .get("/api/articles/1/banana")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Incorrect endpoint");
+        const msg = body.msg;
+        expect(msg).toBe("Incorrect endpoint");
       });
   });
 });
@@ -242,6 +244,41 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: expect an array of users to have length of 4", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users).toHaveLength(4);
+      });
+  });
+  test("200: responds with an array of objects with information of each users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+  test("404: endpoint does not exist", () => {
+    return request(app)
+      .get("/api/banana")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Incorrect endpoint");
       });
   });
 });
