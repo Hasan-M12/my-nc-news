@@ -249,11 +249,12 @@ describe("DELETE /api/comments/:comment_id", () => {
 });
 
 describe("GET /api/users", () => {
-  test("200: expect an array of users to have length of 4", () => {
+  test.only("200: expect an array of users to have length of 4", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
       .then(({ body }) => {
+        console.log(body)
         const { users } = body;
         expect(users).toHaveLength(4);
       });
@@ -279,6 +280,32 @@ describe("GET /api/users", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Incorrect endpoint");
+      });
+  });
+});
+
+describe("GET /api/articles?sort_by=created_at", () => {
+  test("200: should sort by created_at in descending order as default", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        console.log(articles);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("200: should sort by created_at in ascending order", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("created_at", {
+          ascending: true,
+        });
       });
   });
 });

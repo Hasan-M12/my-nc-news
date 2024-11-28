@@ -36,7 +36,7 @@ app.patch("/api/articles/:article_id", updateVotes);
 
 app.delete("/api/comments/:comment_id", deleteComment);
 
-app.get("/api/users", getUsers)
+app.get("/api/users", getUsers);
 
 app.use(wrongPathHandler);
 
