@@ -249,7 +249,7 @@ describe("DELETE /api/comments/:comment_id", () => {
 });
 
 describe("GET /api/users", () => {
-  test.only("200: expect an array of users to have length of 4", () => {
+  test("200: expect an array of users to have length of 4", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
