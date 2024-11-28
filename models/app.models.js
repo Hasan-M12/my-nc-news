@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { sort } = require("../db/data/test-data/articles");
 
 exports.selectTopics = (req, res) => {
   return db.query(`SELECT * FROM topics;`).then(({ rows }) => {
@@ -17,15 +18,28 @@ exports.selectArticlesByID = (id) => {
     });
 };
 
-exports.selectArticles = () => {
-  return db
-    .query(
-      `SELECT article_id, title, topic, author, created_at, votes, article_img_url FROM articles
-      ORDER BY created_at DESC;`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+exports.selectArticles = (sort_by = "created_at", order = "DESC") => {
+  const validSortBy = [
+    "created_at",
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "votes",
+    "comment_count",
+  ];
+
+  let query = `
+    SELECT a.article_id, a.title, a.topic, a.author, a.created_at, 
+    a.votes, a.article_img_url, COUNT(c.comment_id)::INTEGER AS comment_count
+    FROM articles a LEFT JOIN comments c ON a.article_id = c.article_id GROUP BY a.article_id `;
+  const queryValues = [];
+  if (sort_by) {
+    query += `ORDER BY ${sort_by} ${order} `;
+  }
+  return db.query(query, queryValues).then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.selectCommentsByArticleId = (article_id) => {
