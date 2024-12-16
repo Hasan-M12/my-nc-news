@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const {
   getApi,
   getTopics,
@@ -17,6 +18,8 @@ const {
   validIdErrorHandler,
   handleCustomErrors,
 } = require("./error/app.error");
+
+app.use(cors())
 
 app.use(express.json());
 
